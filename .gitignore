@@ -1,0 +1,4 @@
+crypter/aux_folder
+crypter/aux_folder/*
+crypter/folder_to_encrypt/
+crypter/folder_to_encrypt/*
