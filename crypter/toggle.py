@@ -15,7 +15,7 @@ class CypherHandler:
     def __init__(self, password):
 
         # Generating key
-        self.password = bytes(password, 'utf-8') 
+        self.password = bytes(password, 'utf-8')
         print("password:", self.password)
         kdf = PBKDF2HMAC(
                 algorithm = hashes.SHA512(),
