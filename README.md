@@ -35,12 +35,16 @@ This project is an encryption tool developed in Python. It is designed to be use
 2. To decrypt a file, use the following command:
 
     ```
-    python encrypter_cowboy.py --decrypt <file_or_folder_path --password <password> >
+    python encrypter_cowboy.py --decrypt <file_or_folder_path> --password <password> >
     ```
 3. Create your credentials file:
 
     ```
     python encrypter_cowboy.py --create-credentials --password <password>
+    ```
+4. Set built credentials:
+    ```
+    python encrypter_cowboy.py --set-creds <set-credentials-path>
     ```
 ## Testing
 

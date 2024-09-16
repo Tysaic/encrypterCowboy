@@ -21,10 +21,16 @@ if __name__ == '__main__':
     parser.add_argument("--set-creds", type=str, help='Create a credentials file')
 
     args = parser.parse_args()
-    password = args.password if args.password else args.P 
+    password = args.password if args.password else args.P
     #cypher_handler = CypherHandler(password)
     credentials_files = args.set_creds if args.set_creds else ""
+    if args.set_creds:
+        cypher_handler = CypherHandler(credentials_files=credentials_files)
 
+    """
+    List of options.
+    Encrypt - Decrypt - Creating credentials file
+    """
     if args.encrypt or args.e:
         decrypt_or_encrypt = False # True = decrypt , False = encrypt
         path = args.encrypt if args.encrypt else args.e
@@ -34,10 +40,17 @@ if __name__ == '__main__':
         path = args.decrypt if args.decrypt else args.d
         print("[+] Decrypt the files and folders.")
     elif args.create_credentials:
-        cypher_handler.credentials_builder()
+        #Provisional
+        cypher_handler = CypherHandler(password=password, credentials_files=None)
+        # Provisional
         print("Creating credentials file")
-    elif args.set_creds:
-        cypher_handler = CypherHandler(credentials_files=credentials_files)
+    
+    cypher_handler.encrypter(path, decrypt_or_encrypt)
+
+
+
+
+
 
 
     #cypher_handler.encrypter(path, decrypt_or_encrypt, credentials_files)

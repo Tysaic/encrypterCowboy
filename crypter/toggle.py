@@ -5,6 +5,7 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import base64
 import os
 import binascii
+import secrets
 
 class CypherHandler:
     """
@@ -13,16 +14,28 @@ class CypherHandler:
     """
 
     def __init__(self, password=None, credentials_files=None):
-        print("creds here:", credentials_files)
         # Generating key
         if not credentials_files:
+            
+            if not password:
+                self.password = bytes(secrets.token_urlsafe(16), 'utf-8')
+            else:
+                self.password = bytes(password, 'utf-8')
+
+            self.salt = os.urandom(16) 
             kdf = PBKDF2HMAC(
                 algorithm = hashes.SHA512(),
                 length = 32,
-                #salt = os.urandom(16),
-                salt = b'\xa36&\xf9\xcc\xaan\x0f\x8c\x80\xb5I\xe2?\x15\xcd',
+                salt = os.urandom(16),
+                #salt = b'\xa36&\xf9\xcc\xaan\x0f\x8c\x80\xb5I\xe2?\x15\xcd',
                 iterations = 480000,
             )
+            print("[!] There are not salts and any credentials file. [!]")
+            print("[!] The salt would be difficult and get wrong decrypt function if not set.")
+            print("[!] Credentials built with random salt and password if the case.")
+            print("[+] Please save the document called 'credentials.txt' to future decrypt and encryptions.")
+            print("[+] Save the file in a site where only you can access no anybody else.")
+            self.credentials_builder()
         else:
             # Read the credentials file
             with open(credentials_files, "r") as file:
@@ -31,22 +44,20 @@ class CypherHandler:
                 password = lines[0].strip().split(":")[1]
                 salt = lines[1].strip().split(":")[1]
                 # Convert the salt from string to bytes
-                salt_bytes = binascii.unhexlify(salt)
+                self.salt  = binascii.unhexlify(salt)
                 # Set the password and salt in the key derivation function
                 kdf = PBKDF2HMAC(
                     algorithm=hashes.SHA512(),
                     length=32,
-                    salt=salt_bytes,
+                    salt=self.salt,
                     iterations=480000,
                 )
-            print(password, salt)
+                self.password = bytes(password, 'utf-8')
 
-        self.password = bytes(password, 'utf-8')
-        #self.key = Fernet.generate_key()
         self.key = base64.urlsafe_b64encode(kdf.derive(self.password))
         self.cypher_suite = Fernet(self.key)
 
-    def get_cypher_keys(self):
+    def get_cypher_keys(self) -> tuple:
         """
         Return  Simple Key
         [self.key, self.cyphersuite]
@@ -62,8 +73,12 @@ class CypherHandler:
             str: The cipher suite used by the encrypter.
         """
         return self.cypher_suite
+    
+    def salt_password_combination(self, password, salt) -> str:
+        pass
 
-    def file_directory_checker(self, path):
+
+    def file_directory_checker(self, path) -> dict:
         """
         Check if the given path is a file, a directory, or if it exists.
 
@@ -85,7 +100,7 @@ class CypherHandler:
 
 
     
-    def encrypter(self, path, cypher_type = False):
+    def encrypter(self, path, cypher_type = False) -> None:
 
         #is_file = os.path.isfile(path) 
         #is_directory = os.path.isdir(path)
@@ -123,7 +138,7 @@ class CypherHandler:
             print("[-] File doesn't exists! ")
 
 
-    def encrypt_file(self, path, flag_cypher = False):
+    def encrypt_file(self, path, flag_cypher = False) -> bool:
         """
         Encrypter and decrypter function 
         path: relative or absolute path where store the data to handler
@@ -154,6 +169,8 @@ class CypherHandler:
             elif checker['is_dir']:
                 #self.rename_encrypter_fname(path, flag_cypher)
                 pass
+        
+        return True
 
 
 
@@ -171,17 +188,17 @@ class CypherHandler:
 
         full_path_new_name = os.path.join(os.path.dirname(absolute_path), new_name)
         os.rename(absolute_path, full_path_new_name)
-        return print("[+] Files encrypted")
+        print("[+] Files encrypted")
 
     def credentials_builder(self) -> None :
         """
         Create a text file and save a randomly generated salt.
         """
         # Generate a random salt
-        salt = os.urandom(16) #.hex()
-
+        #salt = os.urandom(16) #.hex()
+        salt = self.salt
         # Convert the password to a string
-        password = "secret_password:"+ self.password.decode('utf-8')
+        password = "secret_password:" + self.password.decode("utf-8")
 
         # Convert the salt to a string
         _salt = binascii.hexlify(salt).decode('utf-8')

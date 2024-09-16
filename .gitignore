@@ -1,0 +1,7 @@
+credentials.txt
+*.txt
+tests/__pycache__
+tests/__pycache__/*
+crypter/__pycache__
+crypter/__pycache__/*
+notes.md
