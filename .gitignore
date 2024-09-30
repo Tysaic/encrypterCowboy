@@ -5,3 +5,4 @@ tests/__pycache__/*
 crypter/__pycache__
 crypter/__pycache__/*
 notes.md
+*.txt

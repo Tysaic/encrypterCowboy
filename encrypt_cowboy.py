@@ -19,6 +19,8 @@ if __name__ == '__main__':
     parser.add_argument("--password", type=str, help='Set password')
     parser.add_argument("--create-credentials", type=str, help='Create a credentials file')
     parser.add_argument("--set-creds", type=str, help='Create a credentials file')
+    parser.add_argument("--salt", type=str, help='Set salt for encryption/decryption')
+    parser.add_argument('-S', type=str, help="Set salt for encryption/decryption")
 
     args = parser.parse_args()
     password = args.password if args.password else args.P
@@ -45,16 +47,5 @@ if __name__ == '__main__':
         # Provisional
         print("Creating credentials file")
     
-    cypher_handler.encrypter(path, decrypt_or_encrypt)
-
-
-
-
-
-
-
-    #cypher_handler.encrypter(path, decrypt_or_encrypt, credentials_files)
-
-    #password = 0000
-    #crypt_handler = CypherHandler(password)
+    cypher_handler.encrypter_decrypter(path, decrypt_or_encrypt)
 

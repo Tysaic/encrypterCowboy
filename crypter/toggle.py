@@ -100,8 +100,13 @@ class CypherHandler:
 
 
     
-    def encrypter(self, path, cypher_type = False) -> None:
-
+    def encrypter_decrypter(self, path, cypher_type = False) -> None:
+        """
+        The `encrypter_decrypter` function deterministically encrypts or decrypts 
+        the data at a given path. 
+        It checks whether the path is a file or a directory 
+        and processes the data accordingly.
+        """
         #is_file = os.path.isfile(path) 
         #is_directory = os.path.isdir(path)
         checker = self.file_directory_checker(path)
@@ -130,7 +135,7 @@ class CypherHandler:
                     # Encrypting directories
                     for dir_item in dirnames_item:
                         self.encrypt_file(os.path.join(absolute_path_item, dir_item), cypher_type)
-
+                
                 print("[!] Recursive item are encrypted.")
 
         else:
